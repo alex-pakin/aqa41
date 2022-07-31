@@ -1,25 +1,48 @@
 package ru.netology.domain;
 
+import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$x;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
 
 public class DeliveryFormTest {
 
     @BeforeEach
-    void openBrowser() {open("http://localhost:9999");}
+    void openBrowser() {
+        open("http://localhost:9999");
+    }
+
+    public String generateDate(int days) {
+        return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
+    @Test
+    void shouldSendFormSuccessfulNotification() {
+        String planningDate = generateDate(3);
+        $x("//*[@data-test-id='city']//input").val("Тула");
+        $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
+        $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
+        $x("//*[@data-test-id='phone']//input").val("+79110070707");
+        $x("//*[@data-test-id='agreement']").click();
+        $x("//*[text()='Забронировать']").click();
+        $(".notification__content").shouldHave(Condition.text("Встреча успешно забронирована на "
+                + planningDate), Duration.ofSeconds(15)).shouldBe(visible);
+    }
 
     @Test
     void shouldSendForm() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Тула");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.08.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -29,9 +52,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldSendFormCityWithDash() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Санкт-Петербург");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.08.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -42,9 +66,10 @@ public class DeliveryFormTest {
     //тест буквы "ё"
     @Test
     void shouldSendFormCityWithE() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Орёл");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.08.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -54,9 +79,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldSendFormCityWithSpace() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Нижний Новгород");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.08.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -66,9 +92,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldSendFormNameWithDash() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Тула");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.08.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Ана-Мария Огбезян");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -78,9 +105,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldSendFormSurNameWithDash() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Тула");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.08.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Марина Перейра-Родригес");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -90,9 +118,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldSendFormDate3Days() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Тула");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("30.07.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Марина Перейра-Родригес");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -102,9 +131,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldSendFormDate4Days() {
+        String planningDate = generateDate(4);
         $x("//*[@data-test-id='city']//input").val("Тула");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("31.07.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Марина Перейра-Родригес");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -114,9 +144,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormCityWrongSpelling() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Санкт Петербург");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.08.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -127,9 +158,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormCityNotInList() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Белозерск");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.08.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -140,9 +172,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormDateLessThanThreeDays() {
+        String planningDate = generateDate(2);
         $x("//*[@data-test-id='city']//input").val("Вологда");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.07.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -153,9 +186,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormDateInPast() {
+        String planningDate = generateDate(-365);
         $x("//*[@data-test-id='city']//input").val("Вологда");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.08.2021");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -166,9 +200,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormNameInLatin() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Вологда");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.09.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("James Bond");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -179,9 +214,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormSymbolsInsteadOfName() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Вологда");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.09.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("~!@#$%^&*()_+?...;");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -192,9 +228,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormPhoneStartsWithEight() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Вологда");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.09.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("89110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -205,9 +242,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormPhoneWithSpaces() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Вологда");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.09.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("+7 911 007 07 07");
         $x("//*[@data-test-id='agreement']").click();
@@ -218,9 +256,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormIfNoAgreement() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Вологда");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.09.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[text()='Забронировать']").click();
@@ -230,9 +269,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormIfEmptyCity() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.09.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -256,9 +296,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormIfEmptyName() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Вологда");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.08.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("");
         $x("//*[@data-test-id='phone']//input").val("+79110070707");
         $x("//*[@data-test-id='agreement']").click();
@@ -269,9 +310,10 @@ public class DeliveryFormTest {
 
     @Test
     void shouldNotSendFormIfEmptyPhone() {
+        String planningDate = generateDate(3);
         $x("//*[@data-test-id='city']//input").val("Вологда");
         $x("//*[@data-test-id='date']//input").doubleClick().sendKeys("BackSpace");
-        $x("//*[@data-test-id='date']//input").val("29.08.2022");
+        $x("//*[@data-test-id='date']//input").val(planningDate);
         $x("//*[@data-test-id='name']//input").val("Джеймс Бонд");
         $x("//*[@data-test-id='phone']//input").val("");
         $x("//*[@data-test-id='agreement']").click();
